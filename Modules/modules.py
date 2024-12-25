@@ -71,8 +71,7 @@ def CloudScore6S(sat, img, cloudThresh):
         ## (((GREEN−SWIR1)/(GREEN+SWIR1))−0.8) / (0.6−0.8)
         ndsi = img.normalizedDifference(['B3', 'B11'])
         score =  score.min(rescale(ndsi, 'img', [0.8, 0.6])).multiply(100).byte();
-        ##Map.addLayer(score,{'min':0,'max':100});
-        
+               
         ## Apply threshold
         score = score.lt(cloudThresh).rename('cloudMask')
         img = img.updateMask(img.mask().And(score))
@@ -105,8 +104,7 @@ def CloudScore6S(sat, img, cloudThresh):
         ## (((GREEN−SWIR1)/(GREEN+SWIR1))−0.8) / (0.6−0.8)
         ndsi = img.normalizedDifference(['B3', 'B6'])
         score =  score.min(rescale(ndsi, 'img', [0.8, 0.6])).multiply(100).byte();
-        ##Map.addLayer(score,{'min':0,'max':100});
-        
+                
         ## Apply threshold
         score = score.lt(cloudThresh).rename('cloudMask')
         img = img.updateMask(img.mask().And(score))
@@ -135,8 +133,7 @@ def CloudScore6S(sat, img, cloudThresh):
         ## (((GREEN−SWIR1)/(GREEN+SWIR1))−0.8) / (0.6−0.8)
         ndsi = img.normalizedDifference(['B3', 'B5'])
         score =  score.min(rescale(ndsi, 'img', [0.8, 0.6])).multiply(100).byte();
-        ##Map.addLayer(score,{'min':0,'max':100});
-        
+                
         ## Apply threshold
         score = score.lt(cloudThresh).rename('cloudMask')
         img = img.updateMask(img.mask().And(score))
@@ -165,8 +162,7 @@ def CloudScore6S(sat, img, cloudThresh):
         ## (((GREEN−SWIR1)/(GREEN+SWIR1))−0.8) / (0.6−0.8)
         ndsi = img.normalizedDifference(['B3', 'B5'])
         score =  score.min(rescale(ndsi, 'img', [0.8, 0.6])).multiply(100).byte();
-        ##Map.addLayer(score,{'min':0,'max':100});
-        
+                
         ## Apply threshold
         score = score.lt(cloudThresh).rename('cloudMask')
         img = img.updateMask(img.mask().And(score))
