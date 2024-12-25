@@ -1,0 +1,1 @@
+For doing atmospheric corrections visit the repo: https://github.com/luislizcano/gee-atmcorr-py6s
