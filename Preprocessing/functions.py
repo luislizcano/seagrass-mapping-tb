@@ -16,7 +16,7 @@ def maskLand(image, geometry):
   return image.updateMask(mask)
 
 ## Function to clip an image collection by REGION
-def clipRegion(image, geometry){
+def clipRegion(image, geometry):
   maskRegion = ee.Image.constant(1).clip(geometry).mask()
   return image.updateMask(maskRegion)
 
