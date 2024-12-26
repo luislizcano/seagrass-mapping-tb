@@ -68,19 +68,19 @@ def countPixels(img,region):
     'geometry': region,
     'maxPixels': 1e13})
   ##Create empty feature collection to populate it with properties.  
-   feature = ee.Feature(None)
-   imageStats = img.setMulti(count)
-   properties = ['system:index','Valid_Pixels']
+  feature = ee.Feature(None)
+  imageStats = img.setMulti(count)
+  properties = ['system:index','Valid_Pixels']
   ##Collection with values
-   validPixels = ee.Feature(feature).copyProperties(imageStats,properties)
+  validPixels = ee.Feature(feature).copyProperties(imageStats,properties)
   ##Extract the number of valid pixels
-   getValid = ee.Number(validPixels.get('Valid_Pixels'))
+  getValid = ee.Number(validPixels.get('Valid_Pixels'))
   ##Create a feature with zero's mean and std values
-   zerosDef = {'704_mean': ee.Number(0), '704_stdDev': ee.Number(0),\
+  zerosDef = {'704_mean': ee.Number(0), '704_stdDev': ee.Number(0),\
                 'NDTI_mean': ee.Number(0), 'NDTI_stdDev': ee.Number(0)}
-   zeroValues = ee.Feature(None, zerosDef)
+  zeroValues = ee.Feature(None, zerosDef)
   ##Function to identify images with zero pixels and add the missing mean and std values (zero).
-   newCount = ee.Algorithms.If(**{
+  newCount = ee.Algorithms.If(**{
      'condition': getValid.neq(0), 
      'trueCase': validPixels, 
      'falseCase': validPixels.copyProperties(zeroValues,['704_mean','704_stdDev',\
