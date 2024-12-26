@@ -17,9 +17,10 @@ def maskLand(geometry):
     return image.updateMask(mask)
 
 ## Function to clip an image collection by REGION
-def clipRegion(image, geometry):
-  maskRegion = ee.Image.constant(1).clip(geometry).mask()
-  return image.updateMask(maskRegion)
+def clipRegion(geometry):
+  def apply(image):
+    maskRegion = ee.Image.constant(1).clip(geometry).mask()
+    return image.updateMask(maskRegion)
 
 ## Function to calculate NDTI
 def NDTI(image):
