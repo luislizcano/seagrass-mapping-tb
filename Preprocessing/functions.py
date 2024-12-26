@@ -102,7 +102,7 @@ def countPixels(img,region):
 
 ## A helper to apply an expression and linearly rescale the output.
 ## Used in the landsatCloudScore function.
-def rescale(img, exp, thresholds):
+def threshold(img, exp, thresholds):
     return (img.expression(exp, {'img': img})
       .subtract(thresholds[0]).divide(thresholds[1] - thresholds[0]))
  
@@ -118,23 +118,23 @@ def CloudScore6S(cloudThresh):
 
     ## Clouds are reasonably bright in the blue band.
     ## (BLUE−0.1) / (0.5−0.1)
-    score = score.min(rescale(img, 'img.B2', [0.01, 0.3])) #[0.01,0.5]-for ocean
+    score = score.min(threshold(img, 'img.B2', [0.01, 0.3])) #[0.01,0.5]-for ocean
 
     ## Aerosols.
     ## (AEROSOL−0.1) / (0.3−0.1)
-    score = score.min(rescale(img, 'img.B1', [0.01, 0.3])) #[0.01,0.5]-for ocean
+    score = score.min(threshold(img, 'img.B1', [0.01, 0.3])) #[0.01,0.5]-for ocean
 
     ## Clouds are reasonably bright in all visible bands.
     ## (BLUE+GREEN+RED−0.2) / (0.8−0.2)
-    score = score.min(rescale(img, 'img.B4 + img.B3 + img.B2', [0.01, 0.8]))
+    score = score.min(threshold(img, 'img.B4 + img.B3 + img.B2', [0.01, 0.8]))
 
     ## (((NIR−SWIR1)/(NIR+SWIR1))+0.1) / (0.1+0.1)
-    score =  score.min(rescale(img, 'img.B8 + img.B11 + img.B12', [0.01, 0.8])) #.multiply(100).byte()
+    score =  score.min(threshold(img, 'img.B8 + img.B11 + img.B12', [0.01, 0.8])) #.multiply(100).byte()
 
     ## However, clouds are not snow.
     ## (((GREEN−SWIR1)/(GREEN+SWIR1))−0.8) / (0.6−0.8)
     ndsi = img.normalizedDifference(['B3', 'B11'])
-    score =  score.min(rescale(ndsi, 'img', [0.8, 0.6])).multiply(100).byte()
+    score =  score.min(threshold(ndsi, 'img', [0.8, 0.6])).multiply(100).byte()
            
     ## Apply threshold
     score = score.lt(cloudThresh).rename('cloudMask')
