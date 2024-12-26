@@ -22,6 +22,10 @@ def clipRegion(geometry):
     maskRegion = ee.Image.constant(1).clip(geometry).mask()
     return image.updateMask(maskRegion)
 
+## Function to clean joins.
+def cleanJoin(feature):
+  return ee.Image.cat(feature.get('stats')).copyProperties(feature.get('counts'))
+
 ## Function to calculate NDTI
 def NDTI(image):
   ndti = image.normalizedDifference(['B4','B3']).rename('NDTI')
