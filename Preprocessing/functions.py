@@ -1,6 +1,3 @@
-import sys
-sys.path.append('/content/seagrass-mapping-tb/Run/')
-
 import ee
 ee.Initialize()
 
