@@ -116,8 +116,8 @@ def threshold(img, exp, thresholds):
 ## Adapted according to Chastain et al. 2019 (https://doi.org/10.1016/j.rse.2018.11.012).
 ## Compute a cloud score:
 def CloudScore6S(imgColl, cloudThresh):
+  thrValue = int(cloudThresh)
   def apply(img):
-    cloudThresh = int(cloudThresh)
     ## Compute several indicators of cloudyness and take the minimum of them.
     ## Bands required: [B1,B2,B3,B4,B8,B11,B12]
     score = ee.Image(1.0)
@@ -143,7 +143,7 @@ def CloudScore6S(imgColl, cloudThresh):
     score =  score.min(threshold(ndsi, 'img', [0.8, 0.6])).multiply(100).byte()
            
     ## Apply threshold
-    score = score.lt(cloudThresh).rename('cloudMask')
+    score = score.lt(thrValue).rename('cloudMask')
     img = img.updateMask(img.mask().And(score))
     return ee.Image(img).addBands(score)
   return imgColl.map(apply)
