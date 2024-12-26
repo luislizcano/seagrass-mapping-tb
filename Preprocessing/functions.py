@@ -32,6 +32,7 @@ def NDTI(image):
 ## Statistics function. It retrieves the mean and std values of the bands of interest 
 ## from each image in the collection.
 def getStats(imgColl, region):
+  def apply(img):
     ## Select and rename bands.
     image = ee.Image(img)
     ## Create and combine reducers of mean and std.
