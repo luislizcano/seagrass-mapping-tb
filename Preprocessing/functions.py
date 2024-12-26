@@ -1,3 +1,6 @@
+import ee
+ee.Initialize()
+
 ## Function for scaling bands and preserving image metadata
 def rescale(image):
   img = ee.Image(image).divide(10000)
@@ -47,7 +50,7 @@ def getStats(img,region):
     'scale': 10,
     'maxPixels': 1e13})
   ## Create feature variable to allocate data.
-  feature = ee.Feature(null)
+  feature = ee.Feature(None)
   ## Set properties of interest.
   properties = ['system:index','MGRS_TILE','GENERATION_TIME','MEAN_SOLAR_ZENITH_ANGLE',\
                 'MEAN_SOLAR_AZIMUTH_ANGLE','SPACECRAFT_NAME','CLOUDY_PIXEL_PERCENTAGE',\
@@ -65,7 +68,7 @@ def countPixels(img,region):
     'geometry': region,
     'maxPixels': 1e13})
   ##Create empty feature collection to populate it with properties.  
-   feature = ee.Feature(null)
+   feature = ee.Feature(None)
    imageStats = img.setMulti(count)
    properties = ['system:index','Valid_Pixels']
   ##Collection with values
