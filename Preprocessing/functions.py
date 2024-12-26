@@ -13,7 +13,7 @@ def cloudMask(image):
 ## Function to mask land (with feature collection) in an image collection
 def maskLand(geometry):
   def apply(image):
-    mask = ee.Image.constant(1).clip(geometry).mask().not()
+    mask = ee.Image.constant(1).clip(geometry).mask().Not()
     return image.updateMask(mask)
 
 ## Function to clip an image collection by REGION
