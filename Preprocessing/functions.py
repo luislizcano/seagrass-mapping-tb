@@ -147,3 +147,57 @@ def CloudScore6S(imgColl, cloudThresh):
     img = img.updateMask(img.mask().And(score))
     return ee.Image(img).addBands(score)
   return imgColl.map(apply)
+
+## Deglint function (applied on single images -not collections)
+def deglint(img, geometry):
+  image = ee.Image(img)
+  reducer = ee.Reducer.linearFit()
+  scale = 10
+  
+  ## Fit a linear model between NIR and other bands, in the sunglint polygons
+  ## Output: a dictionary such that: linear_fit.keys() =  ["coefficients","residuals"]
+  
+  ## NIR vs COASTAL
+  linearFit1 = image.select(['B8', 'B1']).reduceRegion(**{
+    'reducer': reducer,
+    'geometry': geometry,
+    'scale': scale,
+    'maxPixels': 1e12})
+  
+  ## NIR vs BLUE
+  linearFit2 = image.select(['B8', 'B2']).reduceRegion(**{
+    'reducer': reducer,
+    'geometry': geometry,
+    'scale': scale,
+    'maxPixels': 1e12})
+  
+  ## NIR vs GREEN
+  linearFit3 = image.select(['B8', 'B3']).reduceRegion(**{
+    'reducer': reducer,
+    'geometry': geometry,
+    'scale': scale,
+    'maxPixels': 1e12})
+  
+  ## NIR vs RED
+  linearFit4 = image.select(['B8', 'B4']).reduceRegion(**{
+    'reducer': reducer,
+    'geometry': geometry,
+    'scale': scale,
+    'maxPixels': 1e12})
+  
+  ## Extract the slope of the fit, convert it into a constant image
+  slopeImage = (ee.Dictionary({'B1': linearFit1.get('scale'), 
+                              'B2': linearFit2.get('scale'), 
+                              'B3': linearFit3.get('scale'), 
+                              'B4': linearFit4.get('scale')}).toImage())
+  
+  ## Calculate the minimum of NIR in the image, in the sunglint polygons
+  minNIR = image.select('B8').reduceRegion(**{
+    'reducer': ee.Reducer.min(),
+    'geometry': geometry,
+    'scale': scale,
+    'maxPixels': 1e12}).toImage(['B8'])
+  
+  ## Apply the expression  
+  return image.select(['B1','B2', 'B3', 'B4']).subtract(slopeImage.multiply((image.select('B8')).subtract(minNIR)))
+
