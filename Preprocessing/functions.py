@@ -1,3 +1,6 @@
+import sys
+sys.path.append('/content/seagrass-mapping-tb/Run/')
+
 import ee
 ee.Initialize()
 
@@ -5,13 +8,6 @@ ee.Initialize()
 def rescale(image):
   img = ee.Image(image).divide(10000)
   return img.copyProperties(image, image.propertyNames())
-
-## Load Cloud Mask function for Sentinel-2 Images
-cloudMaskFunction = require('users/lizcanosandoval/sentinel2/:/CloudScore_S2')
-def cloudMask(image):
-  img = ee.Image(image)
-  mask = cloudMaskFunction.CloudScore(img)
-  return mask
 
 ## Function to mask land (with feature collection) in an image collection
 def maskLand(geometry):
@@ -86,3 +82,64 @@ def countPixels(img,region):
      'falseCase': validPixels.copyProperties(zeroValues,['704_mean','704_stdDev',\
       'NDTI_mean','NDTI_stdDev'])})
   return newCount
+
+## Load Cloud Mask function for Sentinel-2 Images
+# =============================================================================
+# Function to mask clouds using band thresholds.
+
+# Buildings, Sand and Glinted pixels are too bright so they are also masked.
+# It works very well for oceanographic purposes. It needs to be tweked to work
+# with inland areas.
+
+## Usage:
+# img = image to apply cloud mask
+# cloudThresh = integer used as threshold to mask clouds (see more info below)
+# =============================================================================
+## Composite parameters
+## cloudThresh: If using the cloudScoreTDOMShift method-Threshold for cloud 
+##     masking (lower number masks more clouds.  Between 10 and 30 generally 
+##     works best).
+## 20 is the best value for Sentinel-2 according to Zhu et al. (2015) & 
+## Qiu et al. 2019 (https://doi.org/10.1016/j.rse.2019.05.024)
+#cloudThresh = 12 # 12 works best for me. At 2 it cleans all cirrus, but land as well.
+
+## A helper to apply an expression and linearly rescale the output.
+## Used in the landsatCloudScore function.
+def rescale(img, exp, thresholds):
+    return (img.expression(exp, {'img': img})
+      .subtract(thresholds[0]).divide(thresholds[1] - thresholds[0]))
+ 
+## For BOA Sentinel-2 images, processed with the Py6S model 
+## Adapted according to Chastain et al. 2019 (https://doi.org/10.1016/j.rse.2018.11.012).
+## Compute a cloud score:
+def CloudScore6S(cloudThresh):
+  def apply(img):
+    cloudThresh = int(cloudThresh)
+    ## Compute several indicators of cloudyness and take the minimum of them.
+    ## Bands required: [B1,B2,B3,B4,B8,B11,B12]
+    score = ee.Image(1.0)
+
+    ## Clouds are reasonably bright in the blue band.
+    ## (BLUE−0.1) / (0.5−0.1)
+    score = score.min(rescale(img, 'img.B2', [0.01, 0.3])) #[0.01,0.5]-for ocean
+
+    ## Aerosols.
+    ## (AEROSOL−0.1) / (0.3−0.1)
+    score = score.min(rescale(img, 'img.B1', [0.01, 0.3])) #[0.01,0.5]-for ocean
+
+    ## Clouds are reasonably bright in all visible bands.
+    ## (BLUE+GREEN+RED−0.2) / (0.8−0.2)
+    score = score.min(rescale(img, 'img.B4 + img.B3 + img.B2', [0.01, 0.8]))
+
+    ## (((NIR−SWIR1)/(NIR+SWIR1))+0.1) / (0.1+0.1)
+    score =  score.min(rescale(img, 'img.B8 + img.B11 + img.B12', [0.01, 0.8])) #.multiply(100).byte()
+
+    ## However, clouds are not snow.
+    ## (((GREEN−SWIR1)/(GREEN+SWIR1))−0.8) / (0.6−0.8)
+    ndsi = img.normalizedDifference(['B3', 'B11'])
+    score =  score.min(rescale(ndsi, 'img', [0.8, 0.6])).multiply(100).byte()
+           
+    ## Apply threshold
+    score = score.lt(cloudThresh).rename('cloudMask')
+    img = img.updateMask(img.mask().And(score))
+    return ee.Image(img).addBands(score)
