@@ -1,5 +1,5 @@
 def start_processing(imageSource,satellite,boaFolder,exportFolder,segments,segmentName,segmentCode,state,
-                     regionCountry,imageList,smoothStr,sand_areas,groundPoints,land,cloud,dii,flat,turbid):
+                     regionCountry,imageList,smoothStr,sandPoly,groundPoints,land,cloud,dii,flat,turbid):
     """
     Description of arguments required:
     ----------------------------------
@@ -14,7 +14,7 @@ def start_processing(imageSource,satellite,boaFolder,exportFolder,segments,segme
     regionCountry(str)= used as metadata. Country of the region of interest.
     imageList (list)  = list of specific image IDs.
     smoothStr (str)   = use 'smooth' or 'raw' to decide whether to apply a convolution kernel for smoothing L2 image before classification.
-    sand_areas (ee object) = to import featureCollection (dataset) of sand polygons for DII.
+    sandPoly (ee object) = to import featureCollection (dataset) of sand polygons for DII.
     groundPoints (ee object) = to import featureCollection (dataset) of ground-truth points.
     land (ee object)  = to import imageCollection (dataset) of predefined images to mask land.
     cloud (int)       = use 1 to apply cloud mask, if not set as 0.
@@ -159,8 +159,8 @@ def start_processing(imageSource,satellite,boaFolder,exportFolder,segments,segme
         
         if dii == 1:
           ## Filter sand polygons by tile/area:
-          #sand = ee.FeatureCollection(sand_areas).flatten().filterBounds(imageGeometry)
-          sand = ee.FeatureCollection(sand_areas).filterBounds(imageGeometry)
+          #sand = ee.FeatureCollection(sandPoly).flatten().filterBounds(imageGeometry)
+          sand = ee.FeatureCollection(sandPoly).filterBounds(imageGeometry)
 
           ## Run the Depth-Invariant Index Function
           imageDII = DII(landMask, imageScale, sand)
