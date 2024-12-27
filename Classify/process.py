@@ -1,15 +1,15 @@
-def start_processing(imageSource,satellite,regionName,boaFolder,exportFolder,smoothStr,
-                     nameCode,regionCountry,state,imageList,sand_areas,groundPoints,land,regions,cloud,dii,flat,turbid):
+def start_processing(imageSource,satellite,regionName,nameCode,boaFolder,exportFolder,smoothStr,
+                     regionCountry,state,imageList,sand_areas,groundPoints,land,regions,cloud,dii,flat,turbid):
     """
     Description of arguments required:
     ----------------------------------
     imageSource (str) = use 'ee' or 'assets'. It defines whether the L2 images comes from the Earth Engine catalog or user Assets.
     satellite (str)   = use 'Sentinel2', 'Landsat8', 'Landsat7', or 'Landsat5'. It defines the type of satellite sensor.
     regionName (str)  = used as metadata, and for loading predefined geometries used along the script.
+    nameCode (str)    = used as metadata. Unique codes of four digits related to the loaded region in regionName.
     boaFolder (str)   = user defined location of imageCollection containing L2 images from user Assets. Only used if imageSource is set as 'Assets'.
     exportFolder (str)= user defined location to save classified images in user EE Assets.
     smoothStr (str)   = use 'smooth' or 'raw' to decide whether to apply a convolution kernel for smoothing L2 image before classification.
-    nameCode (str)    = used as metadata. Unique codes of four digits related to the loaded region in regionName.
     regionCountry(str)= used as metadata. Country of the region of interest.
     state (str)       = used as metadata. State of the region of interest, if applicable.
     imageList (list)  = list of specific image IDs.
