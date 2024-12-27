@@ -1,12 +1,12 @@
-def start_processing(imageSource,satellite,regionName,nameCode,boaFolder,exportFolder,smoothStr,
-                     regionCountry,state,imageList,sand_areas,groundPoints,land,regions,cloud,dii,flat,turbid):
+def start_processing(imageSource,satellite,segmentName,segmentCode,boaFolder,exportFolder,smoothStr,
+                     regionCountry,state,imageList,sand_areas,groundPoints,land,segments,cloud,dii,flat,turbid):
     """
     Description of arguments required:
     ----------------------------------
     imageSource (str) = use 'ee' or 'assets'. It defines whether the L2 images comes from the Earth Engine catalog or user Assets.
     satellite (str)   = use 'Sentinel2', 'Landsat8', 'Landsat7', or 'Landsat5'. It defines the type of satellite sensor.
-    regionName (str)  = used as metadata, and for loading predefined geometries used along the script.
-    nameCode (str)    = used as metadata. Unique codes of four digits related to the loaded region in regionName.
+    segmentName (str) = used as metadata, and for loading predefined geometries used along the script.
+    segmentCode (str) = used as metadata. Unique codes of four digits related to the loaded region in regionName.
     boaFolder (str)   = user defined location of imageCollection containing L2 images from user Assets. Only used if imageSource is set as 'Assets'.
     exportFolder (str)= user defined location to save classified images in user EE Assets.
     smoothStr (str)   = use 'smooth' or 'raw' to decide whether to apply a convolution kernel for smoothing L2 image before classification.
@@ -16,7 +16,7 @@ def start_processing(imageSource,satellite,regionName,nameCode,boaFolder,exportF
     sand_areas (ee object) = to import featureCollection (dataset) of sand polygons for DII.
     groundPoints (ee object) = to import featureCollection (dataset) of ground-truth points.
     land (ee object)  = to import imageCollection (dataset) of predefined images to mask land.
-    regions (ee object) = to import featureCollection (dataset) of predefined region geometries.
+    segments (ee object) = to import featureCollection (dataset) of predefined region geometries.
     cloud (int)       = use 1 to apply cloud mask, if not set as 0.
     dii (int)         = use 1 to apply depth invariant index and add it as band, if not set as 0.
     flat (int)        = use 1 to apply tidal flat mask, if not set as 0.
@@ -101,7 +101,7 @@ def start_processing(imageSource,satellite,regionName,nameCode,boaFolder,exportF
             imageScale = 30 # Landsat resolution
         
         ## Region of interest:
-        aoi = regions.filter(ee.Filter.eq('name',regionName))
+        aoi = segments.filter(ee.Filter.eq('name_code',segmentCode))
 
 
         ###########################    CLOUD MASK    #############################
@@ -332,8 +332,8 @@ def start_processing(imageSource,satellite,regionName,nameCode,boaFolder,exportF
         # set some properties for exported image:
         output = output_image.set({'country': regionCountry,
                        'state': state,
-                       'location': regionName,
-                       'name_code': nameCode,
+                       'location': segmentName,
+                       'name_code': segmentCode,
                        'satellite': imageSat,
                        'tile_id': str(imageTile),
                        'image_id': imageID,                                               
@@ -345,7 +345,7 @@ def start_processing(imageSource,satellite,regionName,nameCode,boaFolder,exportF
 
         # define YOUR assetID. (This do not create folders, you need to create them manually)
         assetID = 'users/lizcanosandoval/Seagrass/'+sat+'/'+exportFolder+'/' ##This goes to an ImageCollection folder
-        fileName = imageID+smoothStr+ method +'_'+nameCode
+        fileName = imageID+smoothStr+ method +'_'+segmentCode
         path = assetID + fileName
 
         ## Batch Export to Assets
