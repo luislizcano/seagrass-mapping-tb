@@ -1,22 +1,22 @@
-def start_processing(imageSource,satellite,segmentName,segmentCode,boaFolder,exportFolder,smoothStr,
-                     regionCountry,state,imageList,sand_areas,groundPoints,land,segments,cloud,dii,flat,turbid):
+def start_processing(imageSource,satellite,boaFolder,exportFolder,segments,segmentName,segmentCode,state,
+                     regionCountry,imageList,smoothStr,sand_areas,groundPoints,land,cloud,dii,flat,turbid):
     """
     Description of arguments required:
     ----------------------------------
     imageSource (str) = use 'ee' or 'assets'. It defines whether the L2 images comes from the Earth Engine catalog or user Assets.
     satellite (str)   = use 'Sentinel2', 'Landsat8', 'Landsat7', or 'Landsat5'. It defines the type of satellite sensor.
-    segmentName (str) = used as metadata, and for loading predefined geometries used along the script.
-    segmentCode (str) = used as metadata. Unique codes of four digits related to the loaded region in regionName.
     boaFolder (str)   = user defined location of imageCollection containing L2 images from user Assets. Only used if imageSource is set as 'Assets'.
     exportFolder (str)= user defined location to save classified images in user EE Assets.
-    smoothStr (str)   = use 'smooth' or 'raw' to decide whether to apply a convolution kernel for smoothing L2 image before classification.
-    regionCountry(str)= used as metadata. Country of the region of interest.
+    segments (ee object) = to import featureCollection (dataset) of predefined region geometries.
+    segmentName (str) = used as metadata, and for loading predefined geometries used along the script.
+    segmentCode (str) = used as metadata. Unique codes of four digits related to the loaded region in regionName.
     state (str)       = used as metadata. State of the region of interest, if applicable.
+    regionCountry(str)= used as metadata. Country of the region of interest.
     imageList (list)  = list of specific image IDs.
+    smoothStr (str)   = use 'smooth' or 'raw' to decide whether to apply a convolution kernel for smoothing L2 image before classification.
     sand_areas (ee object) = to import featureCollection (dataset) of sand polygons for DII.
     groundPoints (ee object) = to import featureCollection (dataset) of ground-truth points.
     land (ee object)  = to import imageCollection (dataset) of predefined images to mask land.
-    segments (ee object) = to import featureCollection (dataset) of predefined region geometries.
     cloud (int)       = use 1 to apply cloud mask, if not set as 0.
     dii (int)         = use 1 to apply depth invariant index and add it as band, if not set as 0.
     flat (int)        = use 1 to apply tidal flat mask, if not set as 0.
