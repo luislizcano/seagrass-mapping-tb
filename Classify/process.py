@@ -343,10 +343,9 @@ def start_processing(imageSource,satellite,boaFolder,exportFolder,segments,segme
                        'generator': 'Lizcano-Sandoval'
                             })
 
-        # define YOUR assetID. (This do not create folders, you need to create them manually)
-        assetID = 'users/lizcanosandoval/Seagrass/'+sat+'/'+exportFolder+'/' ##This goes to an ImageCollection folder
+        # define YOUR assetID path. (This do not create folders, you need to create them manually)
         fileName = imageID+smoothStr+ method +'_'+segmentCode
-        path = assetID + fileName
+        path = exportFolder + fileName
 
         ## Batch Export to Assets
         ee.batch.Export.image.toAsset(\
