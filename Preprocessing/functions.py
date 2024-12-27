@@ -1,3 +1,6 @@
+### Functions for preprocessing
+### Luis Lizcano-Sandoval (2024)
+
 import ee
 ee.Initialize()
 
