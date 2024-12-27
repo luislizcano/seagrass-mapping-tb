@@ -1,4 +1,4 @@
-def start_processing(imageSource,satellite,regionName,boaFolder,exportFolder,dataFolder,smoothStr,
+def start_processing(imageSource,satellite,regionName,boaFolder,exportFolder,smoothStr,
                      nameCode,regionCountry,state,imageList,sand_areas,groundPoints,land,regions,cloud,dii,flat,turbid):
     """
     Description of arguments required:
@@ -8,7 +8,6 @@ def start_processing(imageSource,satellite,regionName,boaFolder,exportFolder,dat
     regionName (str)  = used as metadata, and for loading predefined geometries used along the script.
     boaFolder (str)   = user defined location of imageCollection containing L2 images from user Assets. Only used if imageSource is set as 'Assets'.
     exportFolder (str)= user defined location to save classified images in user EE Assets.
-    dataFolder (str)  = user defined folder name of ground-truth dataset in user Assets. It is complement of groundPoints argument.
     smoothStr (str)   = use 'smooth' or 'raw' to decide whether to apply a convolution kernel for smoothing L2 image before classification.
     nameCode (str)    = used as metadata. Unique codes of four digits related to the loaded region in regionName.
     regionCountry(str)= used as metadata. Country of the region of interest.
