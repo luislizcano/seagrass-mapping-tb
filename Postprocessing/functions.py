@@ -23,14 +23,13 @@ def maskLand(imgColl, geometry):
     return image.updateMask(mask)
   return imgColl.map(apply)
 
-# ## Calculate areas
-# Area = svm_ref.eq(1).multiply(ee.Image.pixelArea())
-# reducerArea = Area.reduceRegion(**{
-#   'reducer': ee.Reducer.sum(),
-#   'geometry': region,
-#   'scale': scale,
-#   'crs': 'EPSG:4326',
-#   'maxPixels': 1e15})
-
-# areaSqKm = ee.Number(reducerArea.get('classification')).divide(1e6);
-# print('Area '+year+' (km^2):',areaSqKm);
+## Calculate areas
+def getArea(img, geometry):
+  Area = img.eq(1).multiply(ee.Image.pixelArea())
+  reducerArea = Area.reduceRegion(**{
+    'reducer': ee.Reducer.sum(),
+    'geometry': geometry,
+    'scale': 10,
+    'crs': 'EPSG:4326',
+    'maxPixels': 1e15})
+  return ee.Number(reducerArea.get('classification')).divide(1e6)
