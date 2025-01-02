@@ -8,3 +8,8 @@
 </p>
 
 **Cite as:** *Lizcano-Sandoval, L.; Beck, M.W.; Scolaro, S.; Sherwood, E.T.; Muller-Karger, F. (2025) Cloud-Based Satellite Remote Sensing for Enhancing Seagrass Monitoring and Ecosystem Management (In preparation)*
+
+<p align="center">
+<img src="https://raw.github.com/luislizcano/seagrass-mapping-tb/main/misc/usf-logo.jpg" width="200">
+<img src="https://raw.github.com/luislizcano/seagrass-mapping-tb/main/misc/TBEP-logo.png" width="250">
+</p>
